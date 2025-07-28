@@ -1,4 +1,68 @@
-h2 data base:
-JDBC url = jdbc:h2:mem:testdb
+CRUDApplication
+A simple Spring Boot REST API for managing Books with full CRUD operations, logging, and Swagger API documentation.
 
-//just an update
+Features
+Create, Read, Update, Delete books
+
+Auto-generate UUID for missing/invalid ISBN
+
+Layered architecture: Controller → Service → Repository
+
+Global exception handling with meaningful responses
+
+SLF4J logging at key steps
+
+Interactive Swagger UI docs
+
+In-memory H2 database for easy testing
+
+Tech Stack
+Java 17, Spring Boot 3.2.2
+
+Spring Data JPA, H2 Database
+
+Lombok, SLF4J / Logback
+
+springdoc-openapi (Swagger)
+
+JUnit 5, Mockito
+
+Maven
+
+Getting Started
+Clone repo
+git clone https://github.com/yourusername/CRUDApplication.git
+
+Build & run
+
+bash
+Copy
+Edit
+mvn clean install
+mvn spring-boot:run
+Access API docs
+http://localhost:9090/swagger-ui/index.html
+
+| Method | Endpoint                 | Description          |
+| ------ | ------------------------ | -------------------- |
+| GET    | `/book/getallbooks`      | Get all books        |
+| GET    | `/book/getbookbyid/{id}` | Get book by ID       |
+| POST   | `/book/addbook`          | Add a new book       |
+| PUT    | `/book/updatebook/{id}`  | Update existing book |
+| DELETE | `/book/deletebook/{id}`  | Delete book by ID    |
+
+
+Notes
+Book with ID 2 is restricted (cannot access).
+
+ISBN is auto-set to UUID if missing or "null".
+
+Data stored in H2 in-memory DB; resets on restart.
+
+Testing
+Run unit tests with:
+
+bash
+Copy
+Edit
+mvn test

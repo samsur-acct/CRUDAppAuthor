@@ -1,79 +1,50 @@
 package com.example.CRUDApplication.controller;
 
 import com.example.CRUDApplication.model.Book;
-import com.example.CRUDApplication.repo.BookRepo;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.example.CRUDApplication.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/book")
 public class BookController {
 
-  @Autowired private BookRepo bookRepo;
+  @Autowired
+  private BookService bookService;
 
-  @GetMapping("/getAllBooks")
+  @GetMapping("/getallbooks")
   public ResponseEntity<List<Book>> getAllBooks() {
-    try {
-      List<Book> bookList = new ArrayList<>();
-      bookRepo.findAll().forEach(bookList::add);
-      if (bookList.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-      return new ResponseEntity<>(bookList, HttpStatus.OK);
-    } catch (Exception ex) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    List<Book> books = bookService.getAllBooks();
+    if (books.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    return new ResponseEntity<>(books, HttpStatus.OK);
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  @GetMapping("/getBookById/{id}")
+  @GetMapping("/getbookbyid/{id}")
   public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-    Optional<Book> bookData = bookRepo.findById(id);
-    if (id == 2L) {
-      String errorMessage = "Book with ID 2 is restricted and cannot be accessed.";
-      return new ResponseEntity(Map.of("error", errorMessage), HttpStatus.BAD_REQUEST);
-    }
-    if (bookData.isPresent()) {
-      return new ResponseEntity<>(bookData.get(), HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    Book book = bookService.getBookById(id);
+    return new ResponseEntity<>(book, HttpStatus.OK);
   }
 
-  @PostMapping("/addBook")
+  @PostMapping("/addbook")
   public ResponseEntity<Book> addBook(@RequestBody Book book) {
-    Book bookObj = bookRepo.save(book);
-
-    return new ResponseEntity<>(bookObj, HttpStatus.OK);
+    Book savedBook = bookService.addBook(book);
+    return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
   }
 
-  @PostMapping("updateBook/{id}")
-  public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book newBookData) {
-    Optional<Book> oldBookData = bookRepo.findById(id);
-
-    if (oldBookData.isPresent()) {
-      Book updateBookData = oldBookData.get();
-      updateBookData.setAuthor(newBookData.getAuthor());
-      updateBookData.setTitle(newBookData.getTitle());
-
-      Book bookObj = bookRepo.save(updateBookData);
-      return new ResponseEntity<>(bookObj, HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  @PutMapping("/updatebook/{id}")
+  public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book book) {
+    Book updatedBook = bookService.updateBook(id, book);
+    return new ResponseEntity<>(updatedBook, HttpStatus.OK);
   }
 
-  @DeleteMapping("/deleteBook/{id}")
-  public ResponseEntity<HttpStatus> deleteBook(@PathVariable Long id) {
-    bookRepo.deleteById(id);
-    return new ResponseEntity<>(HttpStatus.OK);
+  @DeleteMapping("/deletebook/{id}")
+  public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    bookService.deleteBook(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
