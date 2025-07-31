@@ -23,5 +23,10 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
   }
 
-  // You can add more handlers as needed
+  //Handle book that are restricted
+  @ExceptionHandler(RestrictedBookException.class)
+  public ResponseEntity<ErrorResponse> handleRestrictedBookException(RestrictedBookException ex, WebRequest request) {
+    ErrorResponse error = new ErrorResponse(ex.getMessage(), request.getDescription(false));
+    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  }
 }
