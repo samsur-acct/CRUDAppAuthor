@@ -1,5 +1,6 @@
 package com.example.CRUDApplication.service;
 
+import com.example.CRUDApplication.exception.RestrictedBookException;
 import com.example.CRUDApplication.model.Book;
 import com.example.CRUDApplication.repo.BookRepo;
 import org.slf4j.Logger;
@@ -31,13 +32,13 @@ public class BookServiceImpl implements BookService {
     logger.debug("Fetching book with ID: {}", id);
     if (id == 2L) {
       logger.warn("Attempt to access restricted book with ID: {}", id);
-      throw new IllegalArgumentException("Book with ID 2 is restricted and cannot be accessed.");
+      throw new RestrictedBookException("Book with ID 2 is restricted and cannot be accessed.");
     }
     return bookRepo.findById(id)
-            .orElseThrow(() -> {
-              logger.error("Book not found with ID: {}", id);
-              return new NoSuchElementException("Book not found with ID: " + id);
-            });
+        .orElseThrow(() -> {
+          logger.error("Book not found with ID: {}", id);
+          return new NoSuchElementException("Book not found with ID: " + id);
+        });
   }
 
   @Override
@@ -52,13 +53,14 @@ public class BookServiceImpl implements BookService {
   public Book updateBook(Long id, Book newBookData) {
     logger.info("Updating book with ID: {}", id);
     Book existingBook = bookRepo.findById(id)
-            .orElseThrow(() -> {
-              logger.error("Book not found for update with ID: {}", id);
-              return new NoSuchElementException("Book not found with ID: " + id);
-            });
+        .orElseThrow(() -> {
+          logger.error("Book not found for update with ID: {}", id);
+          return new NoSuchElementException("Book not found with ID: " + id);
+        });
 
     existingBook.setTitle(newBookData.getTitle());
     existingBook.setAuthor(newBookData.getAuthor());
+    existingBook.setISBN(newBookData.getISBN());
     Book updatedBook = bookRepo.save(existingBook);
     logger.debug("Book updated with ID: {}", updatedBook.getId());
     return updatedBook;
