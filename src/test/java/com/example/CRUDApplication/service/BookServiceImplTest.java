@@ -1,5 +1,6 @@
 package com.example.CRUDApplication.service;
 
+import com.example.CRUDApplication.exception.RestrictedBookException;
 import com.example.CRUDApplication.model.Book;
 import com.example.CRUDApplication.repo.BookRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,7 @@ import org.mockito.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class BookServiceImplTest {
@@ -60,7 +62,7 @@ class BookServiceImplTest {
 
     @Test
     void testGetBookById_Restricted() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        RestrictedBookException exception = assertThrows(RestrictedBookException.class, () -> {
             bookService.getBookById(2L);
         });
 

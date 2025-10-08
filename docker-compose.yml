@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  crudapp:
+    build: .
+    container_name: crudapp
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    restart: unless-stopped
