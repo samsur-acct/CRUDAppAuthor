@@ -1,7 +1,5 @@
 package com.example.CRUDApplication.model;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.*;
 
 @Entity
@@ -30,7 +29,9 @@ public class Book {
   @PrePersist
   @PreUpdate
   public void ensureIsbn() {
-    if (this.ISBN == null || this.ISBN.trim().isEmpty() || "null".equalsIgnoreCase(this.ISBN.trim())) {
+    if (this.ISBN == null
+        || this.ISBN.trim().isEmpty()
+        || "null".equalsIgnoreCase(this.ISBN.trim())) {
       this.ISBN = UUID.randomUUID().toString();
     }
   }

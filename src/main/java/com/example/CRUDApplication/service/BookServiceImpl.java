@@ -3,21 +3,19 @@ package com.example.CRUDApplication.service;
 import com.example.CRUDApplication.exception.RestrictedBookException;
 import com.example.CRUDApplication.model.Book;
 import com.example.CRUDApplication.repo.BookRepo;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class BookServiceImpl implements BookService {
 
   private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
 
-  @Autowired
-  private BookRepo bookRepo;
+  @Autowired private BookRepo bookRepo;
 
   @Override
   public List<Book> getAllBooks() {
@@ -34,11 +32,13 @@ public class BookServiceImpl implements BookService {
       logger.warn("Attempt to access restricted book with ID: {}", id);
       throw new RestrictedBookException("Book with ID 2 is restricted and cannot be accessed.");
     }
-    return bookRepo.findById(id)
-        .orElseThrow(() -> {
-          logger.error("Book not found with ID: {}", id);
-          return new NoSuchElementException("Book not found with ID: " + id);
-        });
+    return bookRepo
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              logger.error("Book not found with ID: {}", id);
+              return new NoSuchElementException("Book not found with ID: " + id);
+            });
   }
 
   @Override
@@ -52,11 +52,14 @@ public class BookServiceImpl implements BookService {
   @Override
   public Book updateBook(Long id, Book newBookData) {
     logger.info("Updating book with ID: {}", id);
-    Book existingBook = bookRepo.findById(id)
-        .orElseThrow(() -> {
-          logger.error("Book not found for update with ID: {}", id);
-          return new NoSuchElementException("Book not found with ID: " + id);
-        });
+    Book existingBook =
+        bookRepo
+            .findById(id)
+            .orElseThrow(
+                () -> {
+                  logger.error("Book not found for update with ID: {}", id);
+                  return new NoSuchElementException("Book not found with ID: " + id);
+                });
 
     existingBook.setTitle(newBookData.getTitle());
     existingBook.setAuthor(newBookData.getAuthor());
