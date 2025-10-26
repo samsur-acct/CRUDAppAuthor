@@ -2,18 +2,16 @@ package com.example.CRUDApplication.controller;
 
 import com.example.CRUDApplication.model.Book;
 import com.example.CRUDApplication.service.BookService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/book")
 public class BookController {
 
-  @Autowired
-  private BookService bookService;
+  @Autowired private BookService bookService;
 
   @GetMapping("/getallbooks")
   public ResponseEntity<List<Book>> getAllBooks() {
